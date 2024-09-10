@@ -43,10 +43,6 @@ class Paciente:
             break
                 
 
-novoPaciente = Paciente("Lucas", "kahjsdklas")
-novoPaciente.cadastar_telefone()
-novoPaciente.cadastar_endereco()
-
 
 
 
