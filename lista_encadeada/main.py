@@ -16,7 +16,7 @@ class LinkedList:
             while current.next:
                 current = current.next
             current.next = new_node
-            
+                
     def insert_no_comeco(self):
         while True:
             print()
