@@ -249,7 +249,7 @@ playlist.adicinarMusicaFinal("Música D", "5:10", "Banda W")
 print("Playlist inicial:")
 atual = playlist.head
 contador = 0
-while contador < 4:  # Limitar a 4 músicas para evitar loop infinito
+while contador < 4: 
     print(f"{atual.nome} - {atual.banda} ({atual.tempo})")
     atual = atual.proximo
     contador += 1
@@ -261,7 +261,7 @@ playlist.mover(2, 1)
 print("\nPlaylist após mover:")
 atual = playlist.head
 contador = 0
-while contador < 4:  # Limitar a 4 músicas para evitar loop infinito
+while contador < 4:  
     print(f"{atual.nome} - {atual.banda} ({atual.tempo})")
     atual = atual.proximo
     contador += 1
@@ -273,7 +273,7 @@ playlist.removerMusicaNaPosicao(1)
 print("\nPlaylist após remover da posição 1:")
 atual = playlist.head
 contador = 0
-while contador < 3:  # Limitar a 3 músicas após remoção
+while contador < 3: 
     print(f"{atual.nome} - {atual.banda} ({atual.tempo})")
     atual = atual.proximo
     contador += 1
