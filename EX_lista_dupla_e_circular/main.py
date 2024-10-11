@@ -14,118 +14,98 @@ class Musica:
         self.anterior = None
 
 class PlyList:
-    def __init__(self, duplamente_encadeada=True) -> None:
-        self.head = None 
-        self.duplamente_encadeada = duplamente_encadeada 
+    def __init__(self, duplamente_encadeada=True, circular=False) -> None:
+        self.head = None
+        self.duplamente_encadeada = duplamente_encadeada
+        self.circular = circular
 
     def listaDuplamenteEncadeada(self, valor):
         """Define se a lista será duplamente ou simplesmente encadeada."""
         self.duplamente_encadeada = valor
 
+    def listaCircular(self, valor):
+        """Define se a lista será circular."""
+        self.circular = valor
+
     def adicinarMusicaNoComeco(self, nome, tempo, banda):
         novaMusica = Musica(nome, tempo, banda)
         if not self.head:
             self.head = novaMusica
+            if self.circular:
+                self.head.proximo = self.head
+                if self.duplamente_encadeada:
+                    self.head.anterior = self.head
         else:
             novaMusica.proximo = self.head
             if self.duplamente_encadeada:
+                novaMusica.anterior = None
                 self.head.anterior = novaMusica
             self.head = novaMusica
+            if self.circular:
+                ultimo = self.head
+                while ultimo.proximo != self.head.proximo:
+                    ultimo = ultimo.proximo
+                ultimo.proximo = self.head
+                if self.duplamente_encadeada:
+                    self.head.anterior = ultimo
 
     def removerMusicaDoComeco(self):
-        if self.head is None:
+        if not self.head:
             print("Lista vazia")
+            return
+        if self.head == self.head.proximo:
+            self.head = None
             return
         removerMusica = self.head
         self.head = self.head.proximo
-        if self.duplamente_encadeada and self.head:
+        if self.duplamente_encadeada:
             self.head.anterior = None
+        if self.circular:
+            ultimo = self.head
+            while ultimo.proximo != removerMusica:
+                ultimo = ultimo.proximo
+            ultimo.proximo = self.head
+            if self.duplamente_encadeada:
+                self.head.anterior = ultimo
         del removerMusica
 
     def adicinarMusicaFinal(self, nome, tempo, banda):
         novaMusica = Musica(nome, tempo, banda)
-
         if not self.head:
             self.head = novaMusica
+            if self.circular:
+                self.head.proximo = self.head
+                if self.duplamente_encadeada:
+                    self.head.anterior = self.head
         else:
             atual = self.head
-            while atual.proximo:
+            while atual.proximo != (self.head if self.circular else None):
                 atual = atual.proximo
             atual.proximo = novaMusica
             if self.duplamente_encadeada:
                 novaMusica.anterior = atual
+            if self.circular:
+                novaMusica.proximo = self.head
+                if self.duplamente_encadeada:
+                    self.head.anterior = novaMusica
 
     def removerMusicaDoFinal(self):
-        if self.head is None:
+        if not self.head:
             print("Lista vazia")
             return
-        
-        if self.head.proximo is None:
-            removerMusica = self.head
+        if self.head.proximo == self.head:
             self.head = None
-            del removerMusica
             return
-        
         atual = self.head
-        while atual.proximo:
+        while atual.proximo != (self.head if self.circular else None):
+            anterior = atual
             atual = atual.proximo
         if self.duplamente_encadeada:
-            atual.anterior.proximo = None
-        else:
-            anterior = self.head
-            while anterior.proximo != atual:
-                anterior = anterior.proximo
             anterior.proximo = None
-        del atual
-
-    def adicinarMusicaNaPosicao(self, nome, tempo, banda, posicao):
-        novaMusica = Musica(nome, tempo, banda)
-        if posicao == 0 or not self.head:
-            self.adicinarMusicaNoComeco(nome, tempo, banda)
-            return
-        atual = self.head
-        indice = 0
-
-        while atual.proximo and indice < posicao - 1:
-            atual = atual.proximo
-            indice += 1
-        novaMusica.proximo = atual.proximo
-
-        if self.duplamente_encadeada:
-            novaMusica.anterior = atual
-            if atual.proximo:
-                atual.proximo.anterior = novaMusica
-        atual.proximo = novaMusica
-
-    def removerMusicaNaPosicao(self, posicao):
-        if self.head is None:
-            print("Lista vazia")
-            return
-        
-        if posicao == 0:
-            self.removerMusicaDoComeco()
-            return
-        atual = self.head
-        indice = 0
-
-        while atual.proximo and indice < posicao:
-            atual = atual.proximo
-            indice += 1
-
-        if indice != posicao:
-            print("Posição inválida")
-            return
-        
-        if self.duplamente_encadeada:
-            if atual.anterior:
-                atual.anterior.proximo = atual.proximo
-            if atual.proximo:
-                atual.proximo.anterior = atual.anterior
-        else:
-            anterior = self.head
-            while anterior.proximo != atual:
-                anterior = anterior.proximo
-            anterior.proximo = atual.proximo
+        if self.circular:
+            anterior.proximo = self.head
+            if self.duplamente_encadeada:
+                self.head.anterior = anterior
         del atual
 
 
@@ -145,6 +125,10 @@ playlist.removerMusicaDoFinal()
 
 # Agora, mudar para uma lista simplesmente encadeada
 playlist.listaDuplamenteEncadeada(False)
+
+
+# Ativando a funcionalidade de lista circular
+playlist.listaCircular(True)
 
 # Adicionar e remover músicas usando lista simplesmente encadeada
 playlist.adicinarMusicaNoComeco("Música D", "3:15", "Banda W")
